@@ -109,9 +109,13 @@ function umount_sdcard () {
 
 
 # Download the latest image, using the  --continue "Continue getting a partially-downloaded file"
-########## wget --continue ${image_to_download} -O raspbian_image.zip
-
-echo "image downloaded"
+if [ -z "${reuse_image}" ]
+then
+  echo "reusing previously downloaded image"
+else
+  wget --continue ${image_to_download} -O raspbian_image.zip
+  echo "image downloaded"
+fi
 
 echo "Checking the SHA-1 of the downloaded image matches \"${sha_sum}\""
 
@@ -211,17 +215,17 @@ chmod 0600 "${sdcard_mount}/home/pi/.ssh/authorized_keys"
 
 echo "
 interface eth0
-static ip_address=192.168.0.82/24
+static ip_address=192.168.0.${eth0suffix}/24
 static routers=192.168.0.1
 static domain_name_servers=1.1.1.1 8.8.8.8
 
 interface wlan0
-static ip_address=192.168.0.92/24
+static ip_address=192.168.0.${wlan0suffix}/24
 static routers=192.168.0.1
 static domain_name_servers=1.1.1.1 8.8.8.8
 
 interface wlan1
-static ip_address=192.168.0.102/24
+static ip_address=192.168.0.${wlan1suffix}/24
 static routers=192.168.0.1
 " >> "${sdcard_mount}/etc/dhcpcd.conf"
 

@@ -129,6 +129,9 @@ KERNEL=="sda?", SYMLINK+="mmcblk0p%n"
 KERNEL=="sda2", SYMLINK+="root"
 EOF
 
+echo "created tmpmnt/etc/udev/rules.d/90-qemu.rules"
+cat tmpmnt/etc/udev/rules.d/90-qemu.rules
+
 # Work around a known issue with qemu-arm, versatile board and raspbian for at least qemu-arm < 2.8.0
 # This works but modifies the image so it is recommended to upgrade QEMU
 # Ref: http://stackoverflow.com/questions/38837606/emulate-raspberry-pi-raspbian-with-qemu
@@ -138,6 +141,8 @@ QEMU_MINOR=$( qemu-system-arm --version | grep -oP '\d+\.\d+\.\d+' | head -1 | c
 
 if [[ $QEMU_MAJOR == 2 ]] && [[ $QEMU_MINOR < 8 ]]; then sed -i '/^[^#].*libarmmem.so/s/^\(.*\)$/#\1/' tmpmnt/etc/ld.so.preload; fi
 if [[ $QEMU_MAJOR <  2 ]]                         ; then sed -i '/^[^#].*libarmmem.so/s/^\(.*\)$/#\1/' tmpmnt/etc/ld.so.preload; fi
+exit
+
 
 umount -l tmpmnt
 rmdir tmpmnt &>/dev/null

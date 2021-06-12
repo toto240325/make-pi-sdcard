@@ -181,8 +181,10 @@ then
     exit 9
 fi
 
-if [ -e "${first_boot}" ]
+if [ -e "firstboot_template.sh" ]
 then
+  cp -v firstboot_template.sh ${first_boot}
+  sed "s/newhostname/${myhostname}/g" -i ${first_boot} 
   cp -v "${first_boot}" "${sdcard_mount}/firstboot.sh"
 fi
 
